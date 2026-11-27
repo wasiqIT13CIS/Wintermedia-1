@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#080d18">
+<title>Wintermedia | CISFS Interactive Showcase</title>
+<style>
+  :root { color-scheme: dark; --bg:#080d18; --panel:rgba(18,27,44,.94); --line:rgba(160,190,230,.2); --accent:#70c8ff; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; width:100%; min-height:100%; background:var(--bg); color:#f4f8ff; font-family:Arial,Helvetica,sans-serif; }
+  body { overflow:hidden; }
+  .app { height:100dvh; display:flex; flex-direction:column; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; background:#0d1524; border-bottom:1px solid var(--line); z-index:5; }
+  .brand { font-weight:800; letter-spacing:.14em; font-size:clamp(14px,2vw,20px); }
+  .sub { color:#a9bad1; font-size:11px; letter-spacing:.12em; margin-top:3px; }
+  .status { color:#a9dfff; border:1px solid #31506b; border-radius:999px; padding:7px 10px; font-size:11px; white-space:nowrap; }
+  main { flex:1; min-height:0; display:grid; grid-template-columns:minmax(0,1fr) 250px; gap:12px; padding:12px; }
+  .viewport { position:relative; min-width:0; min-height:0; overflow:hidden; border:1px solid var(--line); border-radius:16px; background:radial-gradient(ellipse at 50% 35%,#1c2b43,#080d18 72%); display:flex; align-items:center; justify-content:center; perspective:1100px; }
+  .scene { width:min(100%, 760px); height:100%; position:relative; display:flex; align-items:center; justify-content:center; transform-style:preserve-3d; transition:transform .22s ease; }
+  .canva-frame { width:100%; height:100%; border:0; background:#fff; border-radius:8px; }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:14px; overflow:auto; }
+  h1 { font-size:17px; margin:0 0 6px; }
+  .hint { color:#a9bad1; font-size:12px; line-height:1.45; margin:0 0 14px; }
+  .group-title { color:#9fb4ce; text-transform:uppercase; letter-spacing:.12em; font-size:10px; font-weight:700; margin:14px 0 8px; }
+  .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+  button { min-height:48px; border:1px solid #36516f; border-radius:11px; background:#17263b; color:#f4f8ff; font-size:13px; font-weight:700; touch-action:manipulation; cursor:pointer; padding:9px 6px; }
+  button:active { background:#254363; transform:scale(.98); }
+  button.primary { background:#16466a; border-color:#4b9bd0; }
+  button.wide { grid-column:1/-1; }
+  .fine { color:#91a5bf; font-size:10px; line-height:1.45; margin-top:12px; }
+  footer { padding:8px 14px; color:#8195af; font-size:10px; text-align:center; border-top:1px solid var(--line); }
+  @media (max-width:760px) {
+    main { grid-template-columns:1fr; grid-template-rows:minmax(0,1fr) auto; }
+    .panel { max-height:36dvh; }
+    .viewport { min-height:36dvh; }
+    .controls-compact { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:7px; }
+    .controls-compact button { min-height:42px; font-size:11px; }
+    .hint { margin-bottom:8px; }
+    .group-title { margin-top:8px; }
+    .fine { margin-top:7px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div><div class="brand">WINTERMEDIA</div><div class="sub">CISFS · INTERACTIVE SHOWCASE</div></div>
+    <div class="status">TOUCHSCREEN MODE</div>
+  </header>
+  <main>
+    <section class="viewport" id="viewport" aria-label="Canva presentation">
+      <div class="scene" id="scene">
+        <iframe class="canva-frame"
+          src="https://www.canva.com/design/DAHbssYxEmE/NjbR-9mqLZMj8Va5SPJ0Yg/view?embed"
+          title="Wasiq G8 Canva project"
+          allow="fullscreen"
+          allowfullscreen
+          loading="eager"></iframe>
+      </div>
+    </section>
+    <aside class="panel">
+      <h1>3D VIEW CONTROLS</h1>
+      <p class="hint">Use these buttons to move and transform the <b>embedded presentation view</b> on the screen.</p>
+      <div class="group-title">Move view</div>
+      <div class="grid controls-compact">
+        <button onclick="move(0,-35)" aria-label="Move view up">↑ UP</button>
+        <button onclick="move(-35,0)" aria-label="Move view left">← LEFT</button>
+        <button onclick="move(35,0)" aria-label="Move view right">RIGHT →</button>
+        <button onclick="move(0,35)" aria-label="Move view down">↓ DOWN</button>
+      </div>
+      <div class="group-title">3D perspective</div>
+      <div class="grid controls-compact">
+        <button onclick="tilt(0,-8)">TILT UP</button>
+        <button onclick="tilt(0,8)">TILT DOWN</button>
+        <button onclick="tilt(-10,0)">TURN LEFT</button>
+        <button onclick="tilt(10,0)">TURN RIGHT</button>
+      </div>
+      <div class="group-title">Zoom</div>
+      <div class="grid controls-compact">
+        <button onclick="zoom(0.1)">＋ ZOOM</button>
+        <button onclick="zoom(-0.1)">－ ZOOM</button>
+        <button class="wide" onclick="resetView()">↺ RESET VIEW</button>
+      </div>
+      <div class="group-title">Display</div>
+      <div class="grid">
+        <button class="primary wide" onclick="goFullscreen()">⛶ FULLSCREEN</button>
+        <button class="wide" onclick="reloadCanva()">↻ RELOAD PRESENTATION</button>
+      </div>
+      <p class="fine"><b>Important:</b> Canva is embedded in a protected iframe. These controls transform the whole presentation panel, not individual objects inside Canva. To move individual 3D objects, export the actual 3D models (for example .glb/.gltf) and load them into a separate 3D viewer.</p>
+    </aside>
+  </main>
+  <footer>Wintermedia · Use the Canva presentation itself to access its built-in interactions.</footer>
+</div>
+<script>
+  const scene = document.getElementById('scene');
+  const viewport = document.getElementById('viewport');
+  let x = 0, y = 0, rx = 0, ry = 0, scale = 1;
+  function render() {
+    scene.style.transform = `translate3d(${x}px,${y}px,0) rotateX(${rx}deg) rotateY(${ry}deg) scale(${scale})`;
+  }
+  function move(dx,dy) { x = Math.max(-250,Math.min(250,x+dx)); y = Math.max(-250,Math.min(250,y+dy)); render(); }
+  function tilt(dx,dy) { ry = Math.max(-35,Math.min(35,ry+dx)); rx = Math.max(-25,Math.min(25,rx+dy)); render(); }
+  function zoom(delta) { scale = Math.max(.55,Math.min(1.6,scale+delta)); render(); }
+  function resetView() { x=0; y=0; rx=0; ry=0; scale=1; render(); }
+  function goFullscreen() {
+    const target = document.querySelector('.app');
+    if (document.fullscreenElement) document.exitFullscreen?.();
+    else target.requestFullscreen?.();
+  }
+  function reloadCanva() { document.querySelector('.canva-frame').src = document.querySelector('.canva-frame').src; }
+  // Allow a simple one-finger drag on the frame's surrounding viewport.
+  let drag = null;
+  viewport.addEventListener('pointerdown', e => {
+    if (e.target.closest('iframe')) return;
+    drag = {x:e.clientX,y:e.clientY, ox:x, oy:y};
+    viewport.setPointerCapture(e.pointerId);
+  });
+  viewport.addEventListener('pointermove', e => {
+    if (!drag) return;
+    x = Math.max(-250,Math.min(250,drag.ox + e.clientX-drag.x));
+    y = Math.max(-250,Math.min(250,drag.oy + e.clientY-drag.y));
+    render();
+  });
+  viewport.addEventListener('pointerup', () => drag=null);
+  viewport.addEventListener('pointercancel', () => drag=null);
+</script>
+</body>
+</html>
